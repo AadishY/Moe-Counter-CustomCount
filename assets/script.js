@@ -261,7 +261,24 @@
   function handleButtonClick() {
     const { name, theme, padding, count, crop, offset, align, scale, pixelated, darkmode, prefix } = elements;
     const nameValue = name.value.trim();
-    if (!nameValue) return;
+    
+    if (!nameValue) {
+      if (loadingEl) {
+        loadingEl.textContent = '⚠️ Please enter a unique name/ID first!';
+        loadingEl.style.display = 'block';
+        loadingEl.style.backgroundColor = 'var(--accent-red)';
+        loadingEl.style.color = '#fff';
+      }
+      name.focus();
+      name.style.borderColor = 'var(--accent-red)';
+      setTimeout(() => { name.style.borderColor = ''; }, 2000);
+      return;
+    }
+
+    if (loadingEl) {
+      loadingEl.style.backgroundColor = ''; // Reset
+      loadingEl.style.color = '';
+    }
 
     let finalCount = count.value;
     if (finalCount === '') {

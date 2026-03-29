@@ -5,7 +5,7 @@ Cute anime-style image counters for your GitHub profile, website, or anywhere yo
 > A stateless, customizable Moe Counter — no database needed. Just deploy and use!
 
 <p align="center">
-  <img src="https://count.getloli.com/@demo?theme=moebooru" alt="Aadish Counter Demo">
+  <img src="https://aadishcounter.vercel.app/@demo?theme= random-animation-digit" alt="Aadish Counter Demo">
 </p>
 
 ## 🚀 How to Use
@@ -13,19 +13,19 @@ Cute anime-style image counters for your GitHub profile, website, or anywhere yo
 Set a unique name for your counter and replace `:name` in the URL:
 
 ```
-https://YOUR_DOMAIN/@:name
+https://aadishcounter.vercel.app@:name
 ```
 
 ### Embed Examples
 
 **HTML:**
 ```html
-<img src="https://YOUR_DOMAIN/@your-name" alt="Counter" />
+<img src="https://aadishcounter.vercel.app@your-name" alt="Counter" />
 ```
 
 **Markdown:**
 ```markdown
-![Counter](https://YOUR_DOMAIN/@your-name)
+![Counter](https://aadishcounter.vercel.app@your-name)
 ```
 
 ## ⚙️ Query Parameters
@@ -46,7 +46,7 @@ https://YOUR_DOMAIN/@:name
 
 **Full example:**
 ```
-https://YOUR_DOMAIN/@mycounter?theme=rule34&count=999&crop=true&size=64
+https://aadishcounter.vercel.app@mycounter?theme=rule34&count=999&crop=true&size=64
 ```
 
 ## 🎨 Themes
@@ -58,215 +58,215 @@ https://YOUR_DOMAIN/@mycounter?theme=rule34&count=999&crop=true&size=64
 
 ##### 3d-num
 
-![3d-num](https://count.getloli.com/@demo?theme=3d-num)
+![3d-num](https://aadishcounter.vercel.app/@demo?theme=3d-num)
 
 ##### ai-1
 
-![ai-1](https://count.getloli.com/@demo?theme=ai-1)
+![ai-1](https://aadishcounter.vercel.app/@demo?theme=ai-1)
 
 ##### asoul
 
-![asoul](https://count.getloli.com/@demo?theme=asoul)
+![asoul](https://aadishcounter.vercel.app/@demo?theme=asoul)
 
 ##### booru-ffsr
 
-![booru-ffsr](https://count.getloli.com/@demo?theme=booru-ffsr)
+![booru-ffsr](https://aadishcounter.vercel.app/@demo?theme=booru-ffsr)
 
 ##### booru-helltaker
 
-![booru-helltaker](https://count.getloli.com/@demo?theme=booru-helltaker)
+![booru-helltaker](https://aadishcounter.vercel.app/@demo?theme=booru-helltaker)
 
 ##### booru-huggboo
 
-![booru-huggboo](https://count.getloli.com/@demo?theme=booru-huggboo)
+![booru-huggboo](https://aadishcounter.vercel.app/@demo?theme=booru-huggboo)
 
 ##### booru-jaypee
 
-![booru-jaypee](https://count.getloli.com/@demo?theme=booru-jaypee)
+![booru-jaypee](https://aadishcounter.vercel.app/@demo?theme=booru-jaypee)
 
 ##### booru-koe
 
-![booru-koe](https://count.getloli.com/@demo?theme=booru-koe)
+![booru-koe](https://aadishcounter.vercel.app/@demo?theme=booru-koe)
 
 ##### booru-lewd
 
-![booru-lewd](https://count.getloli.com/@demo?theme=booru-lewd)
+![booru-lewd](https://aadishcounter.vercel.app/@demo?theme=booru-lewd)
 
 ##### booru-lisu
 
-![booru-lisu](https://count.getloli.com/@demo?theme=booru-lisu)
+![booru-lisu](https://aadishcounter.vercel.app/@demo?theme=booru-lisu)
 
 ##### booru-mjg
 
-![booru-mjg](https://count.getloli.com/@demo?theme=booru-mjg)
+![booru-mjg](https://aadishcounter.vercel.app/@demo?theme=booru-mjg)
 
 ##### booru-mof
 
-![booru-mof](https://count.getloli.com/@demo?theme=booru-mof)
+![booru-mof](https://aadishcounter.vercel.app/@demo?theme=booru-mof)
 
 ##### booru-nandroid
 
-![booru-nandroid](https://count.getloli.com/@demo?theme=booru-nandroid)
+![booru-nandroid](https://aadishcounter.vercel.app/@demo?theme=booru-nandroid)
 
 ##### booru-qualityhentais
 
-![booru-qualityhentais](https://count.getloli.com/@demo?theme=booru-qualityhentais)
+![booru-qualityhentais](https://aadishcounter.vercel.app/@demo?theme=booru-qualityhentais)
 
 ##### booru-r6gdrawfriends
 
-![booru-r6gdrawfriends](https://count.getloli.com/@demo?theme=booru-r6gdrawfriends)
+![booru-r6gdrawfriends](https://aadishcounter.vercel.app/@demo?theme=booru-r6gdrawfriends)
 
 ##### booru-rfck
 
-![booru-rfck](https://count.getloli.com/@demo?theme=booru-rfck)
+![booru-rfck](https://aadishcounter.vercel.app/@demo?theme=booru-rfck)
 
 ##### booru-smtg
 
-![booru-smtg](https://count.getloli.com/@demo?theme=booru-smtg)
+![booru-smtg](https://aadishcounter.vercel.app/@demo?theme=booru-smtg)
 
 ##### booru-snyde
 
-![booru-snyde](https://count.getloli.com/@demo?theme=booru-snyde)
+![booru-snyde](https://aadishcounter.vercel.app/@demo?theme=booru-snyde)
 
 ##### booru-the-collection
 
-![booru-the-collection](https://count.getloli.com/@demo?theme=booru-the-collection)
+![booru-the-collection](https://aadishcounter.vercel.app/@demo?theme=booru-the-collection)
 
 ##### booru-touhoulat
 
-![booru-touhoulat](https://count.getloli.com/@demo?theme=booru-touhoulat)
+![booru-touhoulat](https://aadishcounter.vercel.app/@demo?theme=booru-touhoulat)
 
 ##### booru-townofgravityfalls
 
-![booru-townofgravityfalls](https://count.getloli.com/@demo?theme=booru-townofgravityfalls)
+![booru-townofgravityfalls](https://aadishcounter.vercel.app/@demo?theme=booru-townofgravityfalls)
 
 ##### booru-twifanartsfw
 
-![booru-twifanartsfw](https://count.getloli.com/@demo?theme=booru-twifanartsfw)
+![booru-twifanartsfw](https://aadishcounter.vercel.app/@demo?theme=booru-twifanartsfw)
 
 ##### booru-ve
 
-![booru-ve](https://count.getloli.com/@demo?theme=booru-ve)
+![booru-ve](https://aadishcounter.vercel.app/@demo?theme=booru-ve)
 
 ##### booru-vivi
 
-![booru-vivi](https://count.getloli.com/@demo?theme=booru-vivi)
+![booru-vivi](https://aadishcounter.vercel.app/@demo?theme=booru-vivi)
 
 ##### booru-vp
 
-![booru-vp](https://count.getloli.com/@demo?theme=booru-vp)
+![booru-vp](https://aadishcounter.vercel.app/@demo?theme=booru-vp)
 
 ##### booru-yuyuyui
 
-![booru-yuyuyui](https://count.getloli.com/@demo?theme=booru-yuyuyui)
+![booru-yuyuyui](https://aadishcounter.vercel.app/@demo?theme=booru-yuyuyui)
 
 ##### capoo-1
 
-![capoo-1](https://count.getloli.com/@demo?theme=capoo-1)
+![capoo-1](https://aadishcounter.vercel.app/@demo?theme=capoo-1)
 
 ##### capoo-2
 
-![capoo-2](https://count.getloli.com/@demo?theme=capoo-2)
+![capoo-2](https://aadishcounter.vercel.app/@demo?theme=capoo-2)
 
 ##### e621
 
-![e621](https://count.getloli.com/@demo?theme=e621)
+![e621](https://aadishcounter.vercel.app/@demo?theme=e621)
 
 ##### food
 
-![food](https://count.getloli.com/@demo?theme=food)
+![food](https://aadishcounter.vercel.app/@demo?theme=food)
 
 ##### gelbooru
 
-![gelbooru](https://count.getloli.com/@demo?theme=gelbooru)
+![gelbooru](https://aadishcounter.vercel.app/@demo?theme=gelbooru)
 
 ##### green
 
-![green](https://count.getloli.com/@demo?theme=green)
+![green](https://aadishcounter.vercel.app/@demo?theme=green)
 
 ##### kasuterura-1
 
-![kasuterura-1](https://count.getloli.com/@demo?theme=kasuterura-1)
+![kasuterura-1](https://aadishcounter.vercel.app/@demo?theme=kasuterura-1)
 
 ##### kasuterura-2
 
-![kasuterura-2](https://count.getloli.com/@demo?theme=kasuterura-2)
+![kasuterura-2](https://aadishcounter.vercel.app/@demo?theme=kasuterura-2)
 
 ##### kasuterura-3
 
-![kasuterura-3](https://count.getloli.com/@demo?theme=kasuterura-3)
+![kasuterura-3](https://aadishcounter.vercel.app/@demo?theme=kasuterura-3)
 
 ##### kasuterura-4
 
-![kasuterura-4](https://count.getloli.com/@demo?theme=kasuterura-4)
+![kasuterura-4](https://aadishcounter.vercel.app/@demo?theme=kasuterura-4)
 
 ##### kyun
 
-![kyun](https://count.getloli.com/@demo?theme=kyun)
+![kyun](https://aadishcounter.vercel.app/@demo?theme=kyun)
 
 ##### love-and-deepspace
 
-![love-and-deepspace](https://count.getloli.com/@demo?theme=love-and-deepspace)
+![love-and-deepspace](https://aadishcounter.vercel.app/@demo?theme=love-and-deepspace)
 
 ##### miku
 
-![miku](https://count.getloli.com/@demo?theme=miku)
+![miku](https://aadishcounter.vercel.app/@demo?theme=miku)
 
 ##### minecraft
 
-![minecraft](https://count.getloli.com/@demo?theme=minecraft)
+![minecraft](https://aadishcounter.vercel.app/@demo?theme=minecraft)
 
 ##### moebooru
 
-![moebooru](https://count.getloli.com/@demo?theme=moebooru)
+![moebooru](https://aadishcounter.vercel.app/@demo?theme=moebooru)
 
 ##### morden-num
 
-![morden-num](https://count.getloli.com/@demo?theme=morden-num)
+![morden-num](https://aadishcounter.vercel.app/@demo?theme=morden-num)
 
 ##### nixietube-1
 
-![nixietube-1](https://count.getloli.com/@demo?theme=nixietube-1)
+![nixietube-1](https://aadishcounter.vercel.app/@demo?theme=nixietube-1)
 
 ##### nixietube-2
 
-![nixietube-2](https://count.getloli.com/@demo?theme=nixietube-2)
+![nixietube-2](https://aadishcounter.vercel.app/@demo?theme=nixietube-2)
 
 ##### normal-1
 
-![normal-1](https://count.getloli.com/@demo?theme=normal-1)
+![normal-1](https://aadishcounter.vercel.app/@demo?theme=normal-1)
 
 ##### normal-2
 
-![normal-2](https://count.getloli.com/@demo?theme=normal-2)
+![normal-2](https://aadishcounter.vercel.app/@demo?theme=normal-2)
 
 ##### original-new
 
-![original-new](https://count.getloli.com/@demo?theme=original-new)
+![original-new](https://aadishcounter.vercel.app/@demo?theme=original-new)
 
 ##### original-old
 
-![original-old](https://count.getloli.com/@demo?theme=original-old)
+![original-old](https://aadishcounter.vercel.app/@demo?theme=original-old)
 
 ##### rule34
 
-![rule34](https://count.getloli.com/@demo?theme=rule34)
+![rule34](https://aadishcounter.vercel.app/@demo?theme=rule34)
 
 ##### shimmie2
 
-![shimmie2](https://count.getloli.com/@demo?theme=shimmie2)
+![shimmie2](https://aadishcounter.vercel.app/@demo?theme=shimmie2)
 
 ##### sketch-1
 
-![sketch-1](https://count.getloli.com/@demo?theme=sketch-1)
+![sketch-1](https://aadishcounter.vercel.app/@demo?theme=sketch-1)
 
 ##### sketch-2
 
-![sketch-2](https://count.getloli.com/@demo?theme=sketch-2)
+![sketch-2](https://aadishcounter.vercel.app/@demo?theme=sketch-2)
 
 ##### yousa-ling
 
-![yousa-ling](https://count.getloli.com/@demo?theme=yousa-ling)
+![yousa-ling](https://aadishcounter.vercel.app/@demo?theme=yousa-ling)
 
 </details>
 

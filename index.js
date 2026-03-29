@@ -3,6 +3,9 @@
 require('dotenv').config();
 const express = require("express");
 const compression = require("compression");
+const path = require("path");
+const less = require("less");
+const fs = require("fs");
 const { z } = require("zod");
 
 const { themeList, getCountImage } = require("./utils/themify");
@@ -12,6 +15,9 @@ const { randomArray, logger } = require("./utils");
 const app = express();
 
 const DEFAULT_COUNT = 0;
+const PORT = process.env.APP_PORT || 3000;
+let SITE = process.env.APP_SITE || `http://localhost:${PORT}`;
+if (SITE.endsWith('/')) SITE = SITE.slice(0, -1);
 
 // Theme groups for random modes
 const ANIME_THEMES = [
@@ -25,16 +31,30 @@ const ANIMATION_THEMES = [
   'booru-lewd', 'rule34'
 ].filter(t => t in themeList);
 
-app.use(express.static("assets"));
 app.use(compression());
 app.use(cors());
 app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(express.static(path.join(__dirname, "assets")));
+
+// Dynamic LESS to CSS compilation
+app.get('/style.css', async (req, res) => {
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, 'assets', 'style.less'), 'utf8');
+    const { css } = await less.render(raw);
+    res.setHeader('Content-Type', 'text/css');
+    res.send(css);
+  } catch (err) {
+    logger.error('LESS compilation error:', err);
+    res.status(500).send('/* LESS Error */');
+  }
+});
 
 app.get('/', (req, res) => {
-  const site = process.env.APP_SITE || `${req.protocol}://${req.get('host')}`
   const ga_id = process.env.GA_ID || null
   res.render('index', {
-    site,
+    site: SITE,
     ga_id,
     themeList,
   })
