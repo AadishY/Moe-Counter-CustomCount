@@ -5,7 +5,7 @@ Cute anime-style image counters for your GitHub profile, website, or anywhere yo
 > A stateless, customizable Moe Counter — no database needed. Just deploy and use!
 
 <p align="center">
-  <img src="https://aadishcounter.vercel.app/@demo?theme= random-animation-digit" alt="Aadish Counter Demo">
+  <img src="https://aadishcounter.vercel.app/@demo?theme=random-animation-digit&count=0123456789" alt="Aadish Counter Demo">
 </p>
 
 ## 🚀 How to Use
