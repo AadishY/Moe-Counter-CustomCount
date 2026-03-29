@@ -75,9 +75,6 @@
 
     // Close dropdown
     dropdown.classList.remove('open');
-
-    // Trigger generate
-    throttledGenerate();
   });
 
   // Helper: select a theme in the custom dropdown by value
@@ -122,7 +119,6 @@
         // Scroll to generator
         const genSection = document.querySelector('.tool');
         if (genSection) genSection.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        throttledGenerate();
       }, 300);
     });
   }
@@ -250,6 +246,10 @@
           elements.count.value = '';
           elements.count.placeholder = 'Real-time count enabled';
           
+          elements.prefix.setAttribute('disabled', '');
+          elements.prefix.value = '';
+          elements.prefix.placeholder = 'Disabled';
+          
           if (!genIdEl.textContent || genIdEl.textContent === '-') {
             genIdEl.textContent = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
           }
@@ -257,16 +257,12 @@
         } else {
           elements.count.removeAttribute('disabled');
           elements.count.placeholder = '123456789';
+          
+          elements.prefix.removeAttribute('disabled');
+          elements.prefix.placeholder = 'e.g. 42';
+
           if (container) container.style.display = 'none';
         }
-      }
-      
-      // Auto-generate for other fields if name is provided and valid
-      // But for count-view, we wait for the explicit button click to avoid confusion
-      const curNameVal = elements.name.value.trim();
-      const nameValid = curNameVal.length > 0 && !curNameVal.startsWith(':');
-      if (!isCountView && nameValid) {
-        throttledGenerate();
       }
     });
   });
@@ -281,7 +277,7 @@
     });
   }
 
-  if (sizeCustom) sizeCustom.addEventListener('blur', throttledGenerate);
+  if (sizeCustom) sizeCustom.addEventListener('blur', () => { /* No auto-generate */ });
 
   const mainTitle = document.querySelector('#main_title');
   const themesDetails = document.querySelector('#themes');

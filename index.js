@@ -105,11 +105,13 @@ app.get(["/@:name", "/get/@:name"],
     const isExplicitCount = req._rawQueryKeys.includes('count');
     const isExplicitCountView = req._rawQueryKeys.includes('count-view');
 
-    if (isExplicitCount && isExplicitCountView) {
-      return res.status(400).send({
-        code: 400,
-        message: "The parameters `count` and `count-view` are mutually exclusive."
-      });
+    if (isExplicitCountView) {
+      if (req._rawQueryKeys.includes('count') || req._rawQueryKeys.includes('prefix')) {
+        return res.status(400).send({
+          code: 400,
+          message: "The parameters `count` and `prefix` cannot be used with `count-view`."
+        });
+      }
     }
 
     let { theme = "moebooru", count = DEFAULT_COUNT, "count-view": cv, ...rest } = req.query;
@@ -198,11 +200,13 @@ app.get("/record/@:name", async (req, res) => {
   const isExplicitCountView = req.query['count-view'] !== undefined;
   const cv = req.query['count-view'];
 
-  if (isExplicitCount && isExplicitCountView) {
-    return res.status(400).send({
-      code: 400,
-      message: "The parameters `count` and `count-view` are mutually exclusive."
-    });
+  if (isExplicitCountView) {
+    if (Object.keys(req.query).includes('count') || Object.keys(req.query).includes('prefix')) {
+      return res.status(400).send({
+        code: 400,
+        message: "The parameters `count` and `prefix` are not allowed in real-time mode."
+      });
+    }
   }
 
   const { count = DEFAULT_COUNT } = req.query;
