@@ -177,3 +177,7 @@ pnpm start
 - **License**: This project is licensed under the [MIT License](./LICENSE). Themes belong to their respective creators.
 
 Created with ❤️ by **[Aadish](https://github.com/AadishY)**
+
+<p align="center">
+  <img src="https://aadishcounter.vercel.app/@aadishcountergithub:1462?theme=random-animation-digit&padding=7&crop=false&count-view=true" alt="VIEW">
+</p>
