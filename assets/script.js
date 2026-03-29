@@ -398,20 +398,76 @@
   let isShow = false, lock = false;
   const btn = document.querySelector('.back-to-top');
   if (!btn) return;
-  window.addEventListener('scroll', () => {
+
+  const handleScroll = () => {
     if (lock) return;
-    const st = document.body.scrollTop || document.documentElement.scrollTop;
-    if (st >= 800) { if (!isShow) { btn.classList.add('load'); isShow = true; } }
-    else if (isShow) { btn.classList.remove('load'); isShow = false; }
-  });
-  btn.addEventListener('click', () => {
-    lock = true; btn.classList.add('ani-leave');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => { btn.classList.remove('ani-leave'); btn.classList.add('leaved'); }, 390);
-    setTimeout(() => btn.classList.add('ending'), 120);
-    setTimeout(() => btn.classList.remove('load'), 1500);
-    setTimeout(() => { lock = false; isShow = false; btn.classList.remove('leaved', 'ending'); }, 2000);
-  });
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    
+    // Guard: Only show if scrolled down at least 300px
+    const hasScrolledDown = scrollTop > 300;
+    
+    // "Near bottom" = within 600px of bottom
+    const isNearBottom = (scrollTop + clientHeight) >= (scrollHeight - 600);
+
+    if (hasScrolledDown && isNearBottom) {
+      if (!isShow) {
+        btn.classList.add('load');
+        isShow = true;
+      }
+    } else if (isShow) {
+      btn.classList.remove('load');
+      isShow = false;
+    }
+  };
+
+  const handleClick = (e) => {
+    if (lock) return;
+    lock = true;
+    
+    // Step 1: Switch to Frame 2 (Surprise)
+    btn.classList.add('frame-2-active'); 
+    
+    // Step 2: After 200ms, Switch to Frame 3 (Action)
+    setTimeout(() => {
+      btn.classList.remove('frame-2-active');
+      btn.classList.add('frame-3-active');
+
+      // Step 3: After another 200ms, Launch the slide-out
+      setTimeout(() => {
+        btn.classList.add('ani-leave');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setTimeout(() => {
+          btn.classList.remove('ani-leave', 'frame-3-active');
+          btn.classList.add('leaved');
+        }, 390);
+
+        setTimeout(() => btn.classList.add('ending'), 120);
+        
+        setTimeout(() => {
+          btn.classList.remove('load');
+          // Reset everything
+          setTimeout(() => {
+            lock = false;
+            isShow = false;
+            btn.classList.remove('leaved', 'ending', 'touching');
+          }, 500);
+        }, 1500);
+      }, 200);
+    }, 200);
+  };
+
+  // Mobile hover simulation
+  btn.addEventListener('touchstart', () => { btn.classList.add('touching'); }, {passive: true});
+  btn.addEventListener('touchend', () => { 
+    // Keep it for a bit so user sees frame 2 before handleClick takes over
+    setTimeout(() => btn.classList.remove('touching'), 500); 
+  }, {passive: true});
+
+  window.addEventListener('scroll', handleScroll);
+  btn.addEventListener('click', handleClick);
 })();
 
 (() => { document.addEventListener('gesturestart', e => e.preventDefault()); })();

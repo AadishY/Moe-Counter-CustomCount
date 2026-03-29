@@ -595,40 +595,94 @@ input[type="checkbox"][role="switch"] {
   .back-to-top { width: 44px; height: 44px; bottom: 20px; right: 16px; }
 }
 
-/* --- Back To Top --- */
+/* --- Back To Top (Smooth Layered Slide) --- */
 .back-to-top {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 64px;
-  height: 64px;
-  background-color: transparent;
-  background-image: url("img/back-to-top.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  bottom: 25px; 
+  right: 7px;  
+  width: 240px; /* 1.5x of 160px */
+  height: 240px;
   cursor: pointer;
-  z-index: 500;
+  z-index: 2147483647; 
   opacity: 0;
-  filter: drop-shadow(4px 4px 0px #000);
-  transform: translateY(20px);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  visibility: hidden;
+  /* Start rotated and completely off-screen to the right */
+  transform: translateX(250px) rotate(15deg);
+  transition: 
+    opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), 
+    transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), 
+    visibility 0.8s;
   pointer-events: none;
+
+  span {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right center; /* Align content to the right edge */
+    transition: opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .frame-1 { background-image: url("img/back-to-top-1.png"); opacity: 1; }
+  .frame-2 { background-image: url("img/back-to-top-2.png"); }
+  .frame-3 { background-image: url("img/back-to-top-3.png"); }
+
+  &.load {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0) rotate(0deg);
+    pointer-events: auto;
+  }
+
+  /* Hover Peek */
+  &:hover, &.touching {
+    transform: scale(1.08) rotate(-1deg);
+    filter: drop-shadow(4px 4px 6px rgba(0,0,0,0.15));
+    .frame-1 { opacity: 0; }
+    .frame-2 { opacity: 1; }
+  }
+
+  /* Sequential Click Frames */
+  &.frame-2-active {
+    .frame-1, .frame-3 { opacity: 0; }
+    .frame-2 { opacity: 1; }
+  }
+
+  &.frame-3-active, &.ani-leave, &.ending, &.leaved {
+    .frame-1, .frame-2 { opacity: 0; }
+    .frame-3 { opacity: 1; pointer-events: none; }
+  }
+
+  /* Straight Slide OUT (Animation triggered by ani-leave) */
+  &.ani-leave, &.ending, &.leaved {
+    transform: translateX(350px) translateY(-100vh) rotate(35deg) scale(0.6);
+    opacity: 0;
+    transition: 
+      opacity 1.0s cubic-bezier(0.55, 0.055, 0.675, 0.19),
+      transform 1.0s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    pointer-events: none;
+  }
 }
 
-.back-to-top.load {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
+@media screen and (max-width: 750px) {
+  .back-to-top {
+    width: 106px; /* 1.1x of current 96px */
+    height: 106px;
+    bottom: 30px;
+    right: 0px;
+    transform: translateX(120px) rotate(15deg);
+    
+    &.load {
+      transform: translateX(0) rotate(0deg);
+    }
 
-.back-to-top:hover {
-  transform: scale(1.1) translateY(-5px);
-  filter: drop-shadow(6px 6px 0px #000);
+    &:hover, &.touching {
+      transform: scale(1.1) translateX(-6px) rotate(-1deg);
+    }
+    &.ani-leave, &.ending, &.leaved {
+      transform: translateX(250px) translateY(-100vh) rotate(35deg) scale(0.6);
+      opacity: 0.2;
+    }
+  }
 }
-
-.back-to-top:active {
-  transform: scale(0.95);
-  filter: drop-shadow(2px 2px 0px #000);
-}
-
