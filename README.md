@@ -16,8 +16,9 @@
 
 ## ✨ Features
 
-- ⚡ **Stateless Architecture**: Zero database dependencies. Works perfectly on Vercel, Cloudflare, and Docker.
+- ⚡ **Stateless or Live**: Hybrid architecture. Works stateless by default, or with **Upstash Redis** for real-time tracking.
 - 🎨 **Neo-Brutalist Design**: A bold, high-contrast UI with deep shadows and vibrant accents.
+- 🚀 **Real-time Tracking**: Increment hits live using a unique `name:id` format.
 - 🎲 **Advanced Randomization**: 6 unique random modes (e.g., `random-anime-digit`) that mix digit themes on the fly.
 - 🖼️ **SVG Powered**: Crisp, pixel-perfect rendering across all devices.
 - 🌈 **55+ Themes**: From classic anime to modern pixel art.
@@ -38,8 +39,10 @@ https://aadishcounter.vercel.app/@:id?count=123456789
 
 | Type | Syntax |
 | :--- | :--- |
-| **Markdown** | `![Counter](https://aadishcounter.vercel.app/@yourname?theme=random-anime&count=123456789)` |
-| **HTML** | `<img src="https://aadishcounter.vercel.app/@yourname?theme=random-all-digit&count=123456789" />` |
+| **Manual (Static)** | `https://aadishcounter.vercel.app/@yourname?count=100` |
+| **Real-time (Live)** | `https://aadishcounter.vercel.app/@yourname:1234?count-view=true` |
+| **Markdown** | `![Counter](https://aadishcounter.vercel.app/@yourname:1234?count-view=true)` |
+| **HTML** | `<img src="https://aadishcounter.vercel.app/@yourname:1234?count-view=true" />` |
 
 ---
 
@@ -50,7 +53,8 @@ Tailor your counter precisely using these parameters:
 | Param | Description | Default | Example |
 | :--- | :--- | :--- | :--- |
 | `theme` | Visual style for digits | `moebooru` | `?theme=random-anime` |
-| `count` | Force a specific number to show | `0` | `?count=99999` |
+| `count` | Force a specific number to show | `0123456789` | `?count=99999` |
+| `count-view` | Enable Real-time hits (requires ID suffix) | `false` | `?count-view=true` |
 | `padding` | Minimum number of digits (auto-zero) | `7` | `?padding=5` |
 | `size` | Set image height in pixels | `auto` | `?size=64` |
 | `crop` | Remove zero-padding (dynamic width) | `false` | `?crop=true` |
@@ -143,7 +147,10 @@ Tailor your counter precisely using these parameters:
 ### Vercel (Recommended)
 1. Fork this repository.
 2. Link it to [Vercel](https://vercel.com).
-3. Set Environment Variable: `APP_SITE` = Your domain.
+3. Set Environment Variables: 
+   - `APP_SITE` = Your domain.
+   - `UPSTASH_REDIS_REST_URL` = Your Upstash URL.
+   - `UPSTASH_REDIS_REST_TOKEN` = Your Upstash Token.
 4. **Deploy!**
 
 ### Docker

@@ -1,0 +1,25 @@
+name: Upstash Keep Alive
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight UTC
+  workflow_dispatch: # Allow manual trigger for testing
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Upstash Redis
+        env:
+          REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+        run: |
+          if [ -z "$REST_URL" ] || [ -z "$REST_TOKEN" ]; then
+            echo "Upstash secrets not found in this environment. Skipping."
+            exit 0
+          fi
+          
+          echo "Sending keep-alive ping to Upstash..."
+          curl -s -L "${REST_URL}/incr/moe-counter:keep-alive" \
+               -H "Authorization: Bearer ${REST_TOKEN}" \
+               -o /dev/null -w "Result: %{http_code}\n"

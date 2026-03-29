@@ -17,20 +17,27 @@ function validateInput(parseFn, input) {
 module.exports = {
   ZodValid: ({ headers, params, query, body }) => {
     const handler = (req, res, next) => {
-      const validations = [
-        { input: req.headers, parseFn: headers?.safeParse },
-        { input: req.params, parseFn: params?.safeParse },
-        { input: req.query, parseFn: query?.safeParse },
-        { input: req.body, parseFn: body?.safeParse },
-      ];
+      const schemas = {
+        headers,
+        params,
+        query,
+        body
+      };
 
-      for (const { input, parseFn } of validations) {
-        if (parseFn) {
-          const error = validateInput(parseFn, input);
-          if (error) {
-            return res.status(400).send(error);
-          }
+      for (const [key, schema] of Object.entries(schemas)) {
+        if (!schema) continue;
+
+        const result = schema.safeParse(req[key]);
+        if (!result.success) {
+          const err = result.error.issues[0];
+          return res.status(400).send({
+            code: 400,
+            message: `The field \`${err.path[0] || key}\` is invalid. ${err.message}`,
+          });
         }
+        
+        // Populate request with validated/transformed data
+        req[key] = result.data;
       }
 
       next();

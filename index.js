@@ -7,6 +7,14 @@ const path = require("path");
 const less = require("less");
 const fs = require("fs");
 const { z } = require("zod");
+const { Redis } = require("@upstash/redis");
+
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+  : null;
 
 const { themeList, getCountImage } = require("./utils/themify");
 const { cors, ZodValid } = require("./utils/middleware");
@@ -62,9 +70,16 @@ app.get('/', (req, res) => {
 
 // get the image
 app.get(["/@:name", "/get/@:name"],
+  (req, res, next) => {
+    // Capture original query keys to detect explicit params before Zod adds defaults
+    req._rawQueryKeys = Object.keys(req.query);
+    next();
+  },
   ZodValid({
     params: z.object({
-      name: z.string().max(32),
+      name: z.string().min(1).max(32).refine(val => !val.startsWith(':'), {
+        message: "Counter name cannot start with a colon (:)"
+      }),
     }),
     query: z.object({
       theme: z.string().default("moebooru"),
@@ -77,21 +92,49 @@ app.get(["/@:name", "/get/@:name"],
 
       // Unusual Options
       count: z.coerce.number().int().min(0).max(1e15).default(DEFAULT_COUNT),
+      'count-view': z.enum(["true", "false", "0", "1"]).default("false"),
       prefix: z.coerce.number().int().min(-1).max(999999).default(-1),
       crop: z.enum(["true", "false", "0", "1"]).default("false"),
       size: z.coerce.number().min(0).max(2000).default(0)
     })
   }),
   async (req, res) => {
-    const { name } = req.params;
-    let { theme = "moebooru", count = DEFAULT_COUNT, ...rest } = req.query;
+    let { name } = req.params;
+
+    // Mutually exclusive parameters check based on original URL presence
+    const isExplicitCount = req._rawQueryKeys.includes('count');
+    const isExplicitCountView = req._rawQueryKeys.includes('count-view');
+
+    if (isExplicitCount && isExplicitCountView) {
+      return res.status(400).send({
+        code: 400,
+        message: "The parameters `count` and `count-view` are mutually exclusive."
+      });
+    }
+
+    let { theme = "moebooru", count = DEFAULT_COUNT, "count-view": cv, ...rest } = req.query;
+
+    const isCountView = isExplicitCountView && (cv === 'true' || cv === '1');
+ 
+    if (isCountView) {
+      if (!name.includes(':') || !name.split(':')[1].match(/^\d{4}$/)) {
+        return res.status(400).send({
+          code: 400,
+          message: "Real-time mode requires a name with a 4-digit ID suffix (e.g., name:1234)."
+        });
+      }
+      count = 0; 
+    } else if (!isExplicitCount) {
+      // Default to demo string if no count or count-view provided
+      count = "0123456789";
+    }
 
     res.set({
       "content-type": "image/svg+xml",
       "cache-control": "max-age=0, no-cache, no-store, must-revalidate",
     });
 
-    const data = await getCountData(String(name), Number(count));
+    const data = await getCountData(String(name), Number(count), isCountView);
 
     if (name === "demo") {
       res.set("cache-control", "max-age=31536000");
@@ -146,11 +189,39 @@ app.get(["/@:name", "/get/@:name"],
   }
 );
 
-// JSON record
 app.get("/record/@:name", async (req, res) => {
   const { name } = req.params;
+  if (!name || name.length === 0 || name.startsWith(':')) {
+    return res.status(400).send({ code: 400, message: "A valid name parameter is required." });
+  }
+  const isExplicitCount = req.query.count !== undefined;
+  const isExplicitCountView = req.query['count-view'] !== undefined;
+  const cv = req.query['count-view'];
+
+  if (isExplicitCount && isExplicitCountView) {
+    return res.status(400).send({
+      code: 400,
+      message: "The parameters `count` and `count-view` are mutually exclusive."
+    });
+  }
+
   const { count = DEFAULT_COUNT } = req.query;
-  const data = await getCountData(name, count);
+  const isCountView = isExplicitCountView && (cv === 'true' || cv === '1');
+
+  if (isCountView && (!name.includes(':') || !name.split(':')[1].match(/^\d{4}$/))) {
+    return res.status(400).send({
+      code: 400,
+      message: "Real-time mode requires a name with a 4-digit ID suffix."
+    });
+  }
+
+  let finalCount = count;
+
+  if (!isExplicitCount && !isCountView) {
+    finalCount = "0123456789";
+  }
+
+  const data = await getCountData(name, finalCount, isCountView);
   res.json(data);
 });
 
@@ -164,7 +235,25 @@ const listener = app.listen(process.env.APP_PORT || 3000, () => {
   logger.info("Your app is listening on port " + listener.address().port);
 });
 
-async function getCountData(name, count) {
+async function getCountData(name, countParam, countView = false) {
   if (name === "demo") return { name, num: "0123456789" };
-  return { name, num: count };
+
+  if (countView) {
+    if (!redis) {
+      logger.warn('Upstash Redis not configured, returning placeholder count.');
+      return { name, num: "0000" };
+    }
+
+    try {
+      // Use the whole name parameter as the identification (includes random ID if provided)
+      const key = `moe-counter:${name}`;
+      const count = await redis.incr(key);
+      return { name, num: String(count) };
+    } catch (err) {
+      logger.error('Upstash Redis error:', err);
+      return { name, num: "err" };
+    }
+  }
+
+  return { name, num: countParam };
 }

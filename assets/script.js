@@ -15,6 +15,9 @@
     pixelated: document.getElementById('pixelated'),
     darkmode: document.getElementById('darkmode'),
     count: document.getElementById('count'),
+    'count-view': document.getElementById('count-view'),
+    'generated-id': document.getElementById('generated-id'),
+    'regenerate-id': document.getElementById('regenerate-id'),
     prefix: document.getElementById('prefix'),
     crop: document.getElementById('crop')
   };
@@ -236,9 +239,47 @@
 
   // Auto-generate on dropdown/checkbox changes (NOT text inputs)
   [elements.padding, elements.crop, elements.pixelated,
-   elements.darkmode, elements.align, sizeSelect].forEach(el => {
-    if (el) el.addEventListener('change', throttledGenerate);
+   elements.darkmode, elements.align, sizeSelect, elements['count-view']].forEach(el => {
+    if (el) el.addEventListener('change', (e) => {
+      const isCountView = e.target === elements['count-view'];
+      if (isCountView) {
+        const genIdEl = elements['generated-id'];
+        const container = document.getElementById('gen-id-container');
+        if (elements['count-view'].checked) {
+          elements.count.setAttribute('disabled', '');
+          elements.count.value = '';
+          elements.count.placeholder = 'Real-time count enabled';
+          
+          if (!genIdEl.textContent || genIdEl.textContent === '-') {
+            genIdEl.textContent = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+          }
+          if (container) container.style.display = 'flex';
+        } else {
+          elements.count.removeAttribute('disabled');
+          elements.count.placeholder = '123456789';
+          if (container) container.style.display = 'none';
+        }
+      }
+      
+      // Auto-generate for other fields if name is provided and valid
+      // But for count-view, we wait for the explicit button click to avoid confusion
+      const curNameVal = elements.name.value.trim();
+      const nameValid = curNameVal.length > 0 && !curNameVal.startsWith(':');
+      if (!isCountView && nameValid) {
+        throttledGenerate();
+      }
+    });
   });
+
+  if (elements['regenerate-id']) {
+    elements['regenerate-id'].addEventListener('click', (e) => {
+      e.preventDefault();
+      elements['generated-id'].textContent = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+      if (typeof party !== 'undefined') {
+        party.sparkles(e.target, { count: 10 });
+      }
+    });
+  }
 
   if (sizeCustom) sizeCustom.addEventListener('blur', throttledGenerate);
 
@@ -265,19 +306,28 @@
   // =========================
   function handleButtonClick() {
     const { name, theme, padding, count, crop, offset, align, scale, pixelated, darkmode, prefix } = elements;
-    const nameValue = name.value.trim();
-    
-    if (!nameValue) {
+    const countView = elements['count-view'];
+    const genId = elements['generated-id'].textContent;
+    const nameInput = elements.name.value.trim();
+    if (!nameInput || nameInput.startsWith(':')) {
       if (loadingEl) {
-        loadingEl.textContent = '⚠️ Please enter a unique name/ID first!';
+        loadingEl.textContent = nameInput.startsWith(':') ? '⚠️ Name cannot start with a colon (:)' : '⚠️ Please enter a unique name/ID first!';
         loadingEl.style.display = 'block';
         loadingEl.style.backgroundColor = 'var(--accent-red)';
         loadingEl.style.color = '#fff';
       }
+      if (img) img.style.display = 'none';
+      if (code) code.style.display = 'none';
+
       name.focus();
       name.style.borderColor = 'var(--accent-red)';
       setTimeout(() => { name.style.borderColor = ''; }, 2000);
       return;
+    }
+    
+    let nameValue = nameInput;
+    if (countView && countView.checked && genId && genId !== '-') {
+      nameValue = `${nameValue}:${genId}`;
     }
 
     if (loadingEl) {
@@ -285,18 +335,22 @@
       loadingEl.style.color = '';
     }
 
-    let finalCount = count.value;
-    if (finalCount === '') {
-      finalCount = '123456789';
-      count.value = finalCount;
-    }
-
     const params = {
       theme: theme.value || 'moebooru',
       padding: padding.value || '7',
-      count: finalCount,
       crop: crop.checked ? 'true' : 'false'
     };
+
+    if (countView && countView.checked) {
+      params['count-view'] = 'true';
+    } else {
+      let finalCount = count.value;
+      if (finalCount === '') {
+        finalCount = '0123456789';
+        count.value = finalCount;
+      }
+      params.count = finalCount;
+    }
 
     const sizeVal = getSizeValue();
     if (sizeVal && sizeVal !== '0') params.size = sizeVal;

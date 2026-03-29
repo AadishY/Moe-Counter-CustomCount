@@ -54,6 +54,10 @@ html
         .code-block
           h3.code-label Markdown
           code.code-line ![:name](#{site}/@:name?theme=random-all-digit&amp;count=123456789&amp;crop=true)
+        .code-block
+          h3.code-label Real-time Counter (Auto)
+          code.code-line #{site}/@:name:1234
+        p.theme-hint 💡 In view-only mode, we track hits live using your name + a random ID!
 
         h3.code-label Live Preview
         .example-preview
@@ -84,7 +88,13 @@ html
               tr
                 td: code name
                 td Unique counter id
-                td: input#name(type='text', placeholder='my-counter')
+                td
+                  .name-input-row
+                    input#name(type='text', placeholder='my-counter')
+                    span#gen-id-container(style='display:none;')
+                      | :
+                      code#generated-id -
+                      button#regenerate-id.regenerate-id-btn(title="Regenerate ID") 🔄
               tr
                 td: code theme
                 td Preset themes & randoms
@@ -118,6 +128,13 @@ html
                 td: code count
                 td Display number
                 td: input#count(type='number', value='', placeholder='123456789', min='0', max='1000000000000000', step='1')
+              tr
+                td: code count-view
+                td Real-time Counter (Live) 🚀
+                td
+                  .switch-row
+                    input#count-view(type='checkbox', role='switch')
+                    label(for='count-view'): span
               tr
                 td: code size
                 td Target height (px)
