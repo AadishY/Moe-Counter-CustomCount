@@ -102,6 +102,11 @@
       const themeName = title.textContent;
       selectThemeByValue(themeName);
 
+      // Force count=123456789 for good preview
+      if (elements.count) {
+        elements.count.value = '123456789';
+      }
+
       // Animation
       if (typeof party !== 'undefined') {
         party.confetti(useThemeBtn, { count: party.variation.range(40, 60) });
@@ -143,8 +148,8 @@
     if (!modal || !img || !title || !url) return;
 
     title.textContent = name;
-    img.src = `${__global_data.site}/@demo?theme=${name}`;
-    url.textContent = `${__global_data.site}/@:name?theme=${name}`;
+    img.src = `${__global_data.site}/@demo?theme=${name}&count=123456789`;
+    url.textContent = `${__global_data.site}/@:name?theme=${name}&count=123456789`;
 
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -167,7 +172,7 @@
   function applyTheme(theme) {
     document.body.setAttribute('data-theme', theme);
     localStorage.setItem('aadish-theme', theme);
-    themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+    themeToggle.textContent = theme === 'dark' ? 'DARK' : 'LIGHT';
   }
 
   const savedTheme = localStorage.getItem('aadish-theme') || 'dark';
