@@ -5,12 +5,25 @@ const express = require("express");
 const compression = require("compression");
 const { z } = require("zod");
 
-const db = require("./db");
 const { themeList, getCountImage } = require("./utils/themify");
 const { cors, ZodValid } = require("./utils/middleware");
 const { randomArray, logger } = require("./utils");
 
 const app = express();
+
+const DEFAULT_COUNT = 0;
+
+// Theme groups for random modes
+const ANIME_THEMES = [
+  'asoul', 'booru-jaypee', 'booru-koe', 'booru-lewd', 'booru-lisu',
+  'booru-qualityhentais', 'booru-smtg', 'booru-touhoulat', 'gelbooru',
+  'gelbooru-h', 'green', 'moebooru', 'moebooru-h', 'rule34',
+  'original-new', 'original-old'
+].filter(t => t in themeList);
+
+const ANIMATION_THEMES = [
+  'booru-lewd', 'rule34'
+].filter(t => t in themeList);
 
 app.use(express.static("assets"));
 app.use(compression());
@@ -43,34 +56,61 @@ app.get(["/@:name", "/get/@:name"],
       darkmode: z.enum(["0", "1", "auto"]).default("auto"),
 
       // Unusual Options
-      num: z.coerce.number().int().min(0).max(1e15).default(0), // a carry-safe integer, less than `2^53-1`, and aesthetically pleasing in decimal.
-      prefix: z.coerce.number().int().min(-1).max(999999).default(-1)
+      count: z.coerce.number().int().min(0).max(1e15).default(DEFAULT_COUNT),
+      prefix: z.coerce.number().int().min(-1).max(999999).default(-1),
+      crop: z.enum(["true", "false", "0", "1"]).default("false"),
+      size: z.coerce.number().min(0).max(2000).default(0)
     })
   }),
   async (req, res) => {
     const { name } = req.params;
-    let { theme = "moebooru", num = 0, ...rest } = req.query;
+    let { theme = "moebooru", count = DEFAULT_COUNT, ...rest } = req.query;
 
-    // This helps with GitHub's image cache
     res.set({
       "content-type": "image/svg+xml",
       "cache-control": "max-age=0, no-cache, no-store, must-revalidate",
     });
 
-    const data = await getCountByName(String(name), Number(num));
+    const data = await getCountData(String(name), Number(count));
 
     if (name === "demo") {
       res.set("cache-control", "max-age=31536000");
     }
 
-    if (theme === "random") {
-      theme = randomArray(Object.keys(themeList));
+    // Resolve random theme modes
+    let perDigitPool = null;
+    const allThemes = Object.keys(themeList);
+
+    switch (theme) {
+      case 'random-all':
+        theme = randomArray(allThemes);
+        break;
+      case 'random-anime':
+        theme = randomArray(ANIME_THEMES);
+        break;
+      case 'random-animation':
+      case 'random-animations':
+        theme = randomArray(ANIMATION_THEMES);
+        break;
+      case 'random-all-digit':
+        theme = allThemes[0];
+        perDigitPool = allThemes;
+        break;
+      case 'random-anime-digit':
+        theme = ANIME_THEMES[0] || 'moebooru';
+        perDigitPool = ANIME_THEMES;
+        break;
+      case 'random-animation-digit':
+      case 'random-animations-digit':
+        theme = ANIMATION_THEMES[0] || 'moebooru';
+        perDigitPool = ANIMATION_THEMES;
+        break;
     }
 
-    // Send the generated SVG as the result
     const renderSvg = getCountImage({
       count: data.num,
       theme,
+      perDigitPool,
       ...rest
     });
 
@@ -89,9 +129,8 @@ app.get(["/@:name", "/get/@:name"],
 // JSON record
 app.get("/record/@:name", async (req, res) => {
   const { name } = req.params;
-
-  const data = await getCountByName(name);
-
+  const { count = DEFAULT_COUNT } = req.query;
+  const data = await getCountData(name, count);
   res.json(data);
 });
 
@@ -105,58 +144,7 @@ const listener = app.listen(process.env.APP_PORT || 3000, () => {
   logger.info("Your app is listening on port " + listener.address().port);
 });
 
-let __cache_counter = {};
-let enablePushDelay = process.env.DB_INTERVAL > 0
-let needPush = false;
-
-if (enablePushDelay) {
-  setInterval(() => {
-    needPush = true;
-  }, 1000 * process.env.DB_INTERVAL);
-}
-
-async function pushDB() {
-  if (Object.keys(__cache_counter).length === 0) return;
-  if (enablePushDelay && !needPush) return;
-
-  try {
-    needPush = false;
-    logger.info("pushDB", __cache_counter);
-
-    const counters = Object.keys(__cache_counter).map((key) => {
-      return {
-        name: key,
-        num: __cache_counter[key],
-      };
-    });
-
-    await db.setNumMulti(counters);
-    __cache_counter = {};
-  } catch (error) {
-    logger.error("pushDB is error: ", error);
-  }
-}
-
-async function getCountByName(name, num) {
-  const defaultCount = { name, num: 0 };
-
+async function getCountData(name, count) {
   if (name === "demo") return { name, num: "0123456789" };
-
-  if (num > 0) { return { name, num } };
-
-  try {
-    if (!(name in __cache_counter)) {
-      const counter = (await db.getNum(name)) || defaultCount;
-      __cache_counter[name] = counter.num + 1;
-    } else {
-      __cache_counter[name]++;
-    }
-
-    pushDB();
-
-    return { name, num: __cache_counter[name] };
-  } catch (error) {
-    logger.error("get count by name is error: ", error);
-    return defaultCount;
-  }
+  return { name, num: count };
 }

@@ -1,156 +1,203 @@
 html
   head
-    title='Moe Counter!'
-    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+    title='Aadish Counter! | Neo-Brutalist Anime Counter'
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=5.0')
+    meta(name='description', content='Cute neo-brutalist anime image counter for GitHub profiles and websites! Statless, fast, and highly customizable.')
+    
+    //- Open Graph
+    meta(property="og:title" content="Aadish Counter!")
+    meta(property="og:description" content="Cute neo-brutalist anime image counter service.")
+    meta(property="og:image" content=`${site}/@demo?theme=asoul&size=100`)
+    meta(property="og:url" content=site)
+    meta(name="twitter:card" content="summary_large_image")
+
     link(rel='icon', type='image/png', href=`${site}/favicon.png`)
     link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/normalize.css')
-    link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bamboo.css')
+    link(rel='preconnect', href='https://fonts.googleapis.com')
+    link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin='')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&display=swap')
     link(rel='stylesheet/less', href=`${site}/style.less`)
     script(less, src='https://cdn.jsdelivr.net/npm/less')
     if ga_id
-      <!-- Global site tag (gtag.js) - Google Analytics -->
       script(async, src=`https://www.googletagmanager.com/gtag/js?id=${ga_id}`)
     script.
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
-
       gtag('config', '#{ga_id}');
-
-      function _evt_push(type, category, label) {
-        gtag('event', type, {
-          'event_category' : category,
-          'event_label' : label
-        });
-      }
-
     script.
       var __global_data = { site: "#{site}" };
 
-  body
-    h1#main_title
-      i Moe Counter!
+  body(data-theme="dark")
+    button.theme-toggle-btn#theme-toggle(title="Toggle theme") 🌙
 
-    h3 How to use
-    p Set a unique id for your counter, replace 
-      code :name
-      |  in the url, That's it!
+    .container
+      header.hero-card
+        h1#main_title Aadish Counter!
+        p.subtitle Powerful, stateless anime counters with a bold Neo-Brutalist vibe.
 
-    h5 SVG address
-    code #{site}/@:name
+      section.card
+        h2 📖 How to use
+        p Replace&nbsp;
+          code :name
+          |  with any unique id. Set&nbsp;
+          code count=123456789
+          |  for custom values.
+        .code-block
+          h3.code-label SVG address
+          code.code-line #{site}/@:name?count=123456789
+        .code-block
+          h3.code-label Img tag
+          code.code-line &lt;img src="#{site}/@:name?theme=random-anime&amp;count=123456789" /&gt;
+        .code-block
+          h3.code-label Markdown
+          code.code-line ![:name](#{site}/@:name?theme=random-all-digit&amp;count=123456789&amp;crop=true)
 
-    h5 Img tag
-    code &lt;img src="#{site}/@:name" alt=":name" />
+        h3.code-label Live Preview
+        .example-preview
+          img(src=`${site}/@example?theme=random-anime&count=123456789` alt="Aadish Counter!")
 
-    h5 Markdown
-    code ![:name](#{site}/@:name)
+      section.card
+        details#themes
+          summary#more_theme
+            span.browse-themes-btn 🎨 Browse All Themes ✨
+            span.theme-count #{Object.keys(themeList).length} themes
+          p.theme-hint 👋 Click on any theme below to preview it full-size and get its URL!
+          .theme-grid
+            each theme in Object.keys(themeList)
+              .theme-item(data-theme=theme, onclick=`showThemeModal('${theme}')`)
+                span.theme-name #{theme}
+                img(data-src=`${site}/@demo?theme=${theme}&size=45` alt=theme loading="lazy")
 
-    h5 e.g.
-      img(src=`${site}/@index` alt="Moe Counter!")
+      section.card
+        h2 ⚡ Generator
+        .tool
+          table
+            thead
+              tr
+                th Param
+                th Description
+                th Value
+            tbody
+              tr
+                td: code name
+                td Unique counter id
+                td: input#name(type='text', placeholder='my-counter')
+              tr
+                td: code theme
+                td Preset themes & randoms
+                td
+                  .custom-dropdown#theme-dropdown
+                    .custom-dropdown-selected#theme-selected
+                      span.selected-text ✦ random-anime
+                    .custom-dropdown-list#theme-list
+                      .custom-dropdown-item.selected(data-value="random-anime")
+                        span ✦ random-anime (Anime Pool)
+                      .custom-dropdown-item(data-value="random-all")
+                        span 🎲 random-all (Everything)
+                      .custom-dropdown-item(data-value="random-all-digit")
+                        span 🎲 random-all-digit
+                      .custom-dropdown-item(data-value="random-anime-digit")
+                        span ✦ random-anime-digit
+                      .custom-dropdown-item(data-value="random-animation")
+                        span 🎬 random-animation
+                      .custom-dropdown-item(data-value="random-animation-digit")
+                        span 🎬 random-animation-digit
+                      each theme in Object.keys(themeList)
+                        .custom-dropdown-item(data-value=theme)
+                          img.dropdown-preview(data-src=`${site}/@demo?theme=${theme}&size=20` alt="" loading="lazy")
+                          span #{theme}
+                    input#theme(type='hidden', value='random-anime')
+              tr
+                td: code padding
+                td Minimum length
+                td: input#padding(type='number', value='7', min='0', max='16', step='1')
+              tr
+                td: code count
+                td Display number
+                td: input#count(type='number', value='', placeholder='123456789', min='0', max='1000000000000000', step='1')
+              tr
+                td: code size
+                td Target height (px)
+                td
+                  .size-select-row
+                    select#size-select
+                      option(value="0", selected) Auto
+                      option(value="24") 24 px (Small)
+                      option(value="48") 48 px (Medium)
+                      option(value="64") 64 px (Large)
+                      option(value="128") 128 px (XL)
+                      option(value="200") 200 px (XXL)
+                      option(value="custom") Custom height...
+                    input#size-custom(type='number', value='', placeholder='px', min='10', max='2000', step='1', style='display:none;')
+              tr
+                td: code crop
+                td Dynamic sizing
+                td
+                  .switch-row
+                    input#crop(type='checkbox', role='switch')
+                    label(for='crop'): span
+              tr
+                td(colspan='3')
+                  details#advanced-details.advanced-details
+                    summary#advanced-summary
+                      span.advanced-toggle ⚙️ More Options
+                    table.advanced-table
+                      tbody
+                        tr
+                          td: code offset
+                          td Digit spacing
+                          td: input#offset(type='number', value='0', min='-500', max='500', step='1')
+                        tr
+                          td: code scale
+                          td Manual scale
+                          td: input#scale(type='number', value='1', min='0.1', max='2', step='0.1')
+                        tr
+                          td: code align
+                          td V-Alignment
+                          td: select#align
+                              option(value="top", selected) top
+                              option(value="center") center
+                              option(value="bottom") bottom
+                        tr
+                          td: code pixelated
+                          td Sharp edges
+                          td
+                            .switch-row
+                              input#pixelated(type='checkbox', role='switch', checked)
+                              label(for='pixelated'): span
+                        tr
+                          td: code darkmode
+                          td Dark browser filter
+                          td: select#darkmode
+                              option(value="auto", selected) auto
+                              option(value="1") force on
+                              option(value="0") force off
+                        tr
+                          td: code prefix
+                          td Add prefix num
+                          td: input#prefix(type='number', value='', placeholder='e.g. 42', min='0', max='999999', step='1')
 
-    details#themes
-      summary#more_theme(onclick='_evt_push("click", "normal", "more_theme")')
-        h3 More theme✨
-      p Just use the query parameters <code>theme</code>, like this: <code>#{site}/@:name?theme=moebooru</code>
-      each theme in Object.keys(themeList)
-        div.item(data-theme=theme)
-          h5 #{theme}
-          img(data-src=`${site}/@demo?theme=${theme}` alt=theme)
+          button#get 🚀 Create My Counter!
 
-    h3 Credits
-    ul
-      li: a(href='https://render.com/', target='_blank', rel='nofollow') Render
-      li: a(href='https://space.bilibili.com/703007996', target='_blank', title='A-SOUL_Official') A-SOUL
-      li: a(href='https://github.com/moebooru/moebooru', target='_blank', rel='nofollow') moebooru
-      li
-        a(href='javascript:alert("!!! NSFW LINK !!!\\nPlease enter the url manually")') gelbooru.com
-        |  NSFW
-      li: a(href='https://icons8.com/icon/80355/star', target='_blank', rel='nofollow') Icons8
-      span: i And all booru site...
+          .result-area
+            code#code
+            .loading-indicator#loading 🔄 Generating masterpiece...
+            img#result
 
-    h3 Tool
-    .tool
-      table
-        thead
-          tr
-            th Param
-            th Description
-            th Value
-        tbody
-          tr
-            td: code name
-            td Unique counter name
-            td: input#name(type='text', placeholder=':name')
-          tr
-            td: code theme
-            td Select a counter image theme, default is 
-              code moebooru
-            td
-              select#theme
-                option(value="random", selected) * random
-                each theme in Object.keys(themeList)
-                  option(value=theme) #{theme}
-          tr
-            td: code padding
-            td Set the minimum length, between 1-16, default is 
-              code 7
-            td: input#padding(type='number', value='7', min='1', max='32', step='1', oninput='this.value = this.value.replace(/[^0-9]/g, "")')
-          tr
-            td: code offset
-            td Set the offset pixel value, between -500-500, default is 
-              code 0
-            td: input#offset(type='number', value='0', min='-500', max='500', step='1', oninput='this.value = this.value.replace(/[^0-9|\-]/g, "")')
-          tr
-            td: code scale
-            td Set the image scale, between 0.1-2, default is 
-              code 1
-            td: input#scale(type='number', value='1', min='0.1', max='2', step='0.1', oninput='this.value = this.value.replace(/[^0-9|\.]/g, "")')
-          tr
-            td: code align
-            td Set the image align, Enum top/center/bottom, default is 
-              code top
-            td: select#align(name="align")
-                option(value="top", selected) top
-                option(value="center") center
-                option(value="bottom") bottom
-          tr
-            td: code pixelated
-            td Enable pixelated mode, Enum 0/1, default is 
-              code 1
-            td
-              input#pixelated(type='checkbox', role='switch', checked)
-              label(for='pixelated'): span
-          tr
-            td: code darkmode
-            td Enable dark mode, Enum 0/1/auto, default is 
-              code auto
-            td: select#darkmode(name="darkmode")
-                option(value="auto", selected) auto
-                option(value="1") yes
-                option(value="0") no
-          tr
-            td(colspan=3)
-              h4.caption Unusual Options
-          tr
-            td: code num
-            td Set counter display number, 0 for disable, default is 
-              code 0
-            td: input#num(type='number', value='0', min='0', max='1e15', step='1', oninput='this.value = this.value.replace(/[^0-9]/g, "")')
-          tr
-            td: code prefix
-            td Set the prefix number, empty for disable
-            td: input#prefix(type='number', value='', min='0', max='999999', step='1', oninput='this.value = this.value.replace(/[^0-9]/g, "")')
+      footer.footer-card
+        a(href='https://github.com/AadishY/Moe-Counter-CustomCount', target='_blank') ★ Aadish Counter at GitHub
 
-      button#get(onclick='_evt_push("click", "normal", "get_counter")') Generate
-
-      div
-        code#code
-        img#result
-
-    p.github
-      a(href='https://github.com/journey-ad/Moe-Counter', target='_blank', onclick='_evt_push("click", "normal", "go_github")') source code
+    .theme-modal#theme-modal(onclick="window.closeThemeModal(event)")
+      .theme-modal-content
+        button.theme-modal-close(onclick="window.closeThemeModal()") ✕
+        h3#theme-modal-title Theme Preview
+        .theme-modal-preview
+          img#theme-modal-img(src="" alt="Theme preview")
+        .theme-modal-actions
+          button.theme-modal-use#theme-modal-use ⚡ Use This Theme
+          code#theme-modal-url(title="Click to copy") -
 
     div.back-to-top
-
     script(async, src='https://cdn.jsdelivr.net/npm/party-js@2/bundle/party.min.js')
     script(async, src=`${site}/script.js`)

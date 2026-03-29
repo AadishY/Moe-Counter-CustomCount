@@ -11,13 +11,11 @@
   "author": "journey-ad",
   "license": "MIT",
   "dependencies": {
-    "better-sqlite3": "^12.6.2",
     "compression": "^1.8.0",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "image-size": "^0.8.3",
     "mime-types": "^2.1.35",
-    "mongoose": "^8.15.1",
     "pug": "^3.0.3",
     "zod": "^3.25.61"
   },

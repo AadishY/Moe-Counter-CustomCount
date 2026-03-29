@@ -10,8 +10,8 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install
 
 COPY . .
 
-RUN mkdir -p /app/data
+RUN mkdir -p /app
 
 EXPOSE 3000
 
-CMD ["pnpm", "start"]
+CMD ["node", "index.js"]

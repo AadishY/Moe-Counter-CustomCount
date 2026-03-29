@@ -1,22 +1,55 @@
-# *Moe Counter!*
+# Aadish Counter!
 
-多种风格可选的萌萌计数器
+Cute anime-style image counters for your GitHub profile, website, or anywhere you embed images.
 
-<p align="center">
-  <a href="https://count.getloli.com" target="_blank">
-    <img alt="Moe Counter!" src="https://count.getloli.com/@Moe-counter.github?name=Moe-counter.github&theme=booru-lewd&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto">
-  </a>
-</p>
+> A stateless, customizable Moe Counter — no database needed. Just deploy and use!
 
 <p align="center">
-  <a href="https://hellogithub.com/repository/ed741b376efe46789ce9bb140ac19a52" target="_blank">
-   <picture>
-     <source media="(prefers-color-scheme: dark)" srcset="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=ed741b376efe46789ce9bb140ac19a52&claim_uid=NyJh2Vejq3984f5&theme=dark" />
-     <source media="(prefers-color-scheme: light)" srcset="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=ed741b376efe46789ce9bb140ac19a52&claim_uid=NyJh2Vejq3984f5&theme=neutral" />
-     <img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=ed741b376efe46789ce9bb140ac19a52&claim_uid=NyJh2Vejq3984f5&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" />
-   </picture>
-  </a>
+  <img src="https://count.getloli.com/@demo?theme=moebooru" alt="Aadish Counter Demo">
 </p>
+
+## 🚀 How to Use
+
+Set a unique name for your counter and replace `:name` in the URL:
+
+```
+https://YOUR_DOMAIN/@:name
+```
+
+### Embed Examples
+
+**HTML:**
+```html
+<img src="https://YOUR_DOMAIN/@your-name" alt="Counter" />
+```
+
+**Markdown:**
+```markdown
+![Counter](https://YOUR_DOMAIN/@your-name)
+```
+
+## ⚙️ Query Parameters
+
+| Parameter | Description | Default | Example |
+|-----------|-------------|---------|---------|
+| `theme` | Visual theme for counter digits | `moebooru` | `?theme=booru-lewd` |
+| `count` | Number to display | `0` | `?count=12345` |
+| `padding` | Minimum number of digits | `7` | `?padding=5` |
+| `crop` | Only show actual digits (no zero-padding) | `false` | `?crop=true` |
+| `size` | Target image height in pixels (overrides scale) | auto | `?size=64` |
+| `offset` | Pixel gap between digits | `0` | `?offset=2` |
+| `scale` | Image scale multiplier | `1` | `?scale=1.5` |
+| `align` | Vertical alignment (`top`, `center`, `bottom`) | `top` | `?align=center` |
+| `pixelated` | Pixelated rendering (`0` or `1`) | `1` | `?pixelated=0` |
+| `darkmode` | Dark mode filter (`0`, `1`, `auto`) | `auto` | `?darkmode=1` |
+| `prefix` | Prefix digits before the count | disabled | `?prefix=42` |
+
+**Full example:**
+```
+https://YOUR_DOMAIN/@mycounter?theme=rule34&count=999&crop=true&size=64
+```
+
+## 🎨 Themes
 
 <details>
 <summary><h2>More theme</h2></summary>
@@ -237,104 +270,62 @@
 
 </details>
 
-## Demo
-[https://count.getloli.com](https://count.getloli.com)
+## 📦 Deployment
 
-## How to use
+### Vercel (Recommended)
 
-For information on counter usage and configuration, refer to the [demo website](https://count.getloli.com).
+1. Fork this repo
+2. Import into [Vercel](https://vercel.com)
+3. Set environment variable `APP_SITE` to your domain
+4. Deploy!
 
-## Usage
+### Cloudflare Workers
 
-### Using Docker (Recommended)
+1. Fork this repo
+2. Use Cloudflare Pages or Workers
+3. Set environment variable `APP_SITE`
+4. Deploy!
 
-Pull the pre-built image from GitHub Container Registry:
+### Docker
 
 ```shell
-$ docker pull ghcr.io/journey-ad/moe-counter:latest
-```
-
-Run with Docker:
-
-```shell
-$ docker run -d -p 3000:3000 \
-  -v $(pwd)/data:/app/data \
+docker run -d -p 3000:3000 \
+  -e APP_SITE=https://your-domain.com \
   -e APP_PORT=3000 \
-  -e DB_TYPE=sqlite \
   ghcr.io/journey-ad/moe-counter:latest
 ```
 
-Or use docker-compose:
-
-```yaml
-version: '3'
-services:
-  moe-counter:
-    image: ghcr.io/journey-ad/moe-counter:latest
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./data:/app/data
-    environment:
-      - APP_PORT=3000
-      - DB_TYPE=sqlite
-```
-
-### Deploying from Source
+### Manual
 
 ```shell
-$ git clone https://github.com/journey-ad/Moe-Counter.git
-$ cd Moe-Counter
-$ pnpm install
-
-$ pnpm start
+git clone https://github.com/AadishY/Moe-Counter-CustomCount.git
+cd Moe-Counter-CustomCount
+pnpm install
+pnpm start
 ```
 
-### Configuration
+## 🔧 Configuration
 
-Set `.env` file to specify the environment variables. *[.env.example](./.env.example)*
+Create a `.env` file based on `.env.example`:
 
-```dosini
-# Specify your website URL
-# APP_SITE=https://count.getloli.com
+```ini
+# Your public site URL
+APP_SITE=https://your-domain.com
 
-# Application port
+# Server port
 APP_PORT=3000
 
-# Database type: either 'sqlite' or 'mongodb'
-DB_TYPE=sqlite
+# Log level: debug | info | warn | error | none
+LOG_LEVEL=info
 
-# If using MongoDB, provide the connection string
-# DB_URL=mongodb://127.0.0.1:27017
-
-# Database write interval in seconds (0 for real-time)
-DB_INTERVAL=60
-
-# Log level: either 'debug' | 'info' | 'warn' | 'error' | 'none'
-LOG_LEVEL=debug
-
-# Google Analytics `G-Tag` ID
+# Google Analytics (optional)
 # GA_ID=G-XXXX
 ```
 
-## Credits
+## 📄 License
 
-* [A-SOUL_Official](https://space.bilibili.com/703007996)
-* [moebooru](https://github.com/moebooru/moebooru)
-* gelbooru.com NSFW
-* [Icons8](https://icons8.com/icon/80355/star)
-* *And all booru site...*
-
-## License
-
-[MIT License](./LICENSE), excluding all themes
+[MIT License](./LICENSE), excluding all themes.
 
 ---
 
-<a href="https://star-history.com/?repos=journey-ad/Moe-Counter&type=Date#journey-ad/Moe-Counter&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=journey-ad/Moe-Counter&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=journey-ad/Moe-Counter&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=journey-ad/Moe-Counter&type=Date" />
- </picture>
-</a>
+**[⭐ Star this repo](https://github.com/AadishY/Moe-Counter-CustomCount)** if you find it useful!
